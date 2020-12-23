@@ -322,3 +322,41 @@ export class MoviesController {
   }
 }
 ```
+
+```json
+// localhost:3000/movies
+// request POST - JSON
+{
+	"title": "Tenet",
+	"year": 2020,
+	"genres": ["action", "mind blown"]
+}
+
+// localhost:3000/movies
+// request GET
+// response
+[
+  {
+    "id": 1,
+    "title": "Tenet",
+    "year": 2020,
+    "genres": [
+      "action",
+      "mind blown"
+    ]
+  }
+]
+
+// localhost:3000/movies/1
+// request GET
+// response
+{
+  "id": 1,
+  "title": "Tenet",
+  "year": 2020,
+  "genres": [
+    "action",
+    "mind blown"
+  ]
+}
+```
