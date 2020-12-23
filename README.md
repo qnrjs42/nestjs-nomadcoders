@@ -360,3 +360,58 @@ export class MoviesController {
   ]
 }
 ```
+
+<br/>
+
+---
+
+## Validation (class-validator, class-transformer)
+- 유효성 검사
+
+```
+npm i class-validator class-transformer
+```
+
+```ts
+// src/movies/dto/create-movie.dto.ts
+import { IsNumber, IsString } from 'class-validator';
+
+export class CreateMovieDto {
+  @IsString()
+  readonly title: string;
+  @IsNumber()
+  readonly year: number;
+  @IsString({ each: true })
+  readonly genres: string[];
+}
+```
+
+- each: 배열의 모든 요소를 하나씩 검사
+
+
+```ts
+// src/main.ts
+import { ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
+  await app.listen(3000);
+}
+bootstrap();
+```
+
+*** ValidationPipe ***
+- whitelist:  설정된 property를 무조건 작성해야함.
+- forbidNonWhitelisted: 설정된 property 이외에 다른 property가 들어오면 걸러냄.
+- transform: 설정된 property의 타입으로 변환
+
+여기서 설정된 property란 'src/movies/dto/create-movie.dto.ts' 해당 파일을 말하는 것.
