@@ -16,14 +16,6 @@ npm run start:dev
 
 - nestJS는 src/main.ts 파일 필수.
 
-```
-// 나만의 모듈 시작할 때
-src/app.moduel.ts
-src/main.ts
-
-두 파일로 시작한다.
-```
-
 ---
 
 ## 데코레이터
@@ -94,3 +86,70 @@ getHi(): string {
 ```
 
 ---
+
+## nest generate
+
+```
+// 나만의 모듈 시작할 때
+src/app.moduel.ts
+src/main.ts
+
+두 파일로 시작한다.
+```
+
+```ts
+nest g co
+-> g: 생성, co: 컨트롤러
+
+? What name would you like to use for the controller? movies
+
+src/movies/movies.controller.ts 파일이 생성된다.
+
+// controller 파일이 생성됨 동시에 app.module.ts 파일이 자동으로 아래와 같이 수정된다.
+import { Module } from '@nestjs/common';
+import { MoviesController } from './movies/movies.controller';
+
+@Module({
+  imports: [],
+  controllers: [MoviesController],
+  providers: [],
+})
+export class AppModule {}
+```
+
+```ts
+// movies/movies.controller.ts
+
+import { Controller, Get } from '@nestjs/common';
+
+@Controller('movies')
+export class MoviesController {
+  @Get()
+  getAll(): string {
+    return 'This wull return all movies';
+  }
+}
+```
+
+- @Controller('movies') 이 부분이 컨트롤러를 위한 url를 만듦. (localhost:3000/movies/)
+- 즉, 이 부분이 엔트리 포인트를 컨트롤.
+- @Controller() 빈 값을 주면 (localhost:3000/)으로 접속했을 때 getAll 함수가 실행된다.
+
+<br/>
+
+```ts
+// movies/movies.controller.ts
+
+@Get('/:id')
+getOne() {
+  return 'This will return one movie';
+}
+
+// 파라미터가 있을 경우
+@Get('/:id')
+getOne(@Param('id') id: string) {
+  return `This will return one movie with the id: ${id}`;
+}
+```
+- localhost:3000/1 으로 접속 시 getOne 함수 실행.
+- nestJS는 무언가 필요하면 request해야 함.
