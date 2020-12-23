@@ -16,6 +16,14 @@ npm run start:dev
 
 - nestJS는 src/main.ts 파일 필수.
 
+```
+// 나만의 모듈 시작할 때
+src/app.moduel.ts
+src/main.ts
+
+두 파일로 시작한다.
+```
+
 ---
 
 ## 데코레이터
@@ -38,6 +46,7 @@ npm run start:dev
 ---
   
 ## Controllers
+- 컨트롤러는 url를 가져오는 역할
 
 ```ts
 // src/app.controller.ts
@@ -60,6 +69,28 @@ sayHello(): string {
   sayHello(): string {
     return 'Hello EveryOne';
   }
+```
+
+---
+
+## service
+- 비즈니스 로직 함수를 실행하는 공간.
+
+```ts
+// app.controller.ts
+
+@Get('/hello')
+  sayHello(): string {
+    return this.appService.getHi();
+  }
+```
+
+```ts
+// app.service.ts
+
+getHi(): string {
+  return 'Hi Nest';
+}
 ```
 
 ---
