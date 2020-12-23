@@ -150,6 +150,85 @@ getOne() {
 getOne(@Param('id') id: string) {
   return `This will return one movie with the id: ${id}`;
 }
+
+@Get() 안에 '/:id'와
+getOne(@Parm()) 안에 'id'가 같아야 한다.
+
+하지만 id: string은 다르게 써도 된다.
 ```
 - localhost:3000/1 으로 접속 시 getOne 함수 실행.
 - nestJS는 무언가 필요하면 request해야 함.
+
+<br/>
+
+```ts
+// movies/movies.controller.ts
+@Post()
+create(@Body() movieData: any) {
+  console.log(movieData);
+  return 'This will create a movie';
+}
+```
+```json
+// localhost:3000/movies
+// request POST - body - json
+{
+	"name": "Tenet",
+	"director": "Nolan"
+}
+
+// console
+{ name: 'Tenet', director: 'Nolan' }
+```
+
+<br/>
+
+### Param + Body
+
+```ts
+// movies/movies.controller.ts
+@Patch('/:id')
+  patch(@Param('id') movieId: string, @Body() updateData) {
+    return {
+      updatedMovie: movieId,
+      ...updateData,
+    };
+  }
+```
+
+```json
+// localhost:3000/movies/12
+// request PATCH - body - json
+{
+	"name": "Tenet",
+	"director": "Nolan"
+}
+
+// response
+{
+  "updatedMovie": "12",
+  "name": "Tenet",
+  "director": "Nolan"
+}
+```
+
+<br/>
+
+### Query String
+
+```ts
+// movies/movies.controller.ts
+@Get('search')
+search(@Query('year') searchingYear: string) {
+  return `We are searching for a movie: ${searchingYear}`;
+}
+```
+
+```json
+// localhost:3000/movies/search?year=2000
+// request GET
+
+
+// response
+We are searching for a movie: 2000
+```
