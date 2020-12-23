@@ -161,6 +161,8 @@ getOne(@Parm()) 안에 'id'가 같아야 한다.
 
 <br/>
 
+### POST - Body
+
 ```ts
 // movies/movies.controller.ts
 @Post()
@@ -183,7 +185,7 @@ create(@Body() movieData: any) {
 
 <br/>
 
-### Param + Body
+### PATCH - Param + Body
 
 ```ts
 // movies/movies.controller.ts
@@ -214,7 +216,7 @@ create(@Body() movieData: any) {
 
 <br/>
 
-### Query String
+### GET - Query String
 
 ```ts
 // movies/movies.controller.ts
@@ -231,4 +233,92 @@ search(@Query('year') searchingYear: string) {
 
 // response
 We are searching for a movie: 2000
+```
+
+---
+
+<br/>
+
+## Movie Service
+
+```ts
+// src/movies/entities/movie.entity.ts
+export class Movie {
+  id: number;
+  title: string;
+  year: number;
+  genres: string[];
+}
+```
+
+```ts
+// src/movies/movies.service.ts
+import { Injectable } from '@nestjs/common';
+import { Movie } from './entities/movie.entity';
+
+@Injectable()
+export class MoviesService {
+  private movies: Movie[] = [];
+
+  getAll(): Movie[] {
+    return this.movies;
+  }
+
+  getOne(id: string): Movie {
+    return this.movies.find((movie) => movie.id === parseInt(id));
+  }
+
+  deleteOne(id: string): boolean {
+    this.movies.filter((movie) => movie.id !== parseInt(id));
+    return true;
+  }
+
+  create(movideData) {
+    this.movies.push({
+      id: this.movies.length + 1,
+      ...movideData,
+    });
+  }
+}
+```
+
+```ts
+// src/movies/movies.controller.ts
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
+import { Movie } from './entities/movie.entity';
+import { MoviesService } from './movies.service';
+
+@Controller('movies')
+export class MoviesController {
+  constructor(private readonly moviesService: MoviesService) {}
+
+  @Get()
+  getAll(): Movie[] {
+    return this.moviesService.getAll();
+  }
+
+  @Get('/:id')
+  getOne(@Param('id') movieId: string): Movie {
+    return this.moviesService.getOne(movieId);
+  }
+
+  @Post()
+  create(@Body() movieData: any) {
+    return this.moviesService.create(movieData);
+  }
+
+  @Delete('/:id')
+  remove(@Param('id') movieId: string) {
+    return this.moviesService.deleteOne(movieId);
+  }
+}
 ```
