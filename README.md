@@ -379,15 +379,18 @@ import { IsNumber, IsString } from 'class-validator';
 export class CreateMovieDto {
   @IsString()
   readonly title: string;
+
   @IsNumber()
   readonly year: number;
+
+  @IsOptional()
   @IsString({ each: true })
   readonly genres: string[];
 }
 ```
 
-- each: 배열의 모든 요소를 하나씩 검사
-
+- @IsOptional(): 필수사항 아님.
+- each: 배열의 모든 요소를 하나씩 검사.
 
 ```ts
 // src/main.ts
@@ -415,3 +418,48 @@ bootstrap();
 - transform: 설정된 property의 타입으로 변환
 
 여기서 설정된 property란 'src/movies/dto/create-movie.dto.ts' 해당 파일을 말하는 것.
+
+<br/>
+
+---
+
+## mapped-types
+- 타입을 변환시키고 사용할 수 있는 모듈
+- DTO를 변환
+
+```
+npm i @nestjs/mapped-types
+```
+
+```ts
+// src/movides/dto/update-movie.dto.ts
+import { PartialType } from '@nestjs/mapped-types';
+import { IsNumber, IsString } from 'class-validator';
+import { CreateMovieDto } from './create-movie.dto';
+
+// CreateMovieDto property 구조가 똑같다. 필수 사항 제외하면
+export class UpdateMovieDto extends PartialType(CreateMovieDto) {}
+```
+
+```json
+// localhost:3000/movies/1
+// request PATCH
+{
+  "year": 2025,
+}
+
+// localhost:3000/movies/1
+// request GET
+// response
+[
+  {
+    "id": 1,
+    "title": "Tenet",
+    "year": 2025,
+    "genres": [
+      "action",
+      "mind blown"
+    ]
+  }
+]
+```
